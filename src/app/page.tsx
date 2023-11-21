@@ -280,6 +280,7 @@ export default function Home() {
         // maxStabilizationIterations={50}
         // maxVelocityFrictionIterations={50}
         maxVelocityIterations={100}
+        
       >
         {/* <Stage intensity={0.5} shadows="contact" environment="city"> */}
         <PerspectiveCamera makeDefault position={[20, 20, -20]} zoom={1} />
