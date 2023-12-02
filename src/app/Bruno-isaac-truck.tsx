@@ -228,37 +228,39 @@ export function BrunoIsaac(props: JSX.IntrinsicElements['group']) {
 
   return (
     <group {...props} dispose={null}>
-      <RigidBody ref={chassisRef} colliders='hull' mass={1}>
-        <mesh geometry={nodes['left-headlight'].geometry} material={materials.light} position={[0.88, 0.214, -0.313]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.422} />
-        <mesh geometry={nodes['right-headlight'].geometry} material={materials.light} position={[0.88, 0.215, 0.292]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.422} />
-        <mesh geometry={nodes.toplight4.geometry} material={materials.light} position={[-0.204, 0.777, -0.304]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.536} />
-        <mesh geometry={nodes.toplight3.geometry} material={materials.light} position={[-0.204, 0.777, -0.112]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.536} />
-        <mesh geometry={nodes.toplight2.geometry} material={materials.light} position={[-0.204, 0.778, 0.08]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.536} />
-        <mesh geometry={nodes.toplight1.geometry} material={materials.light} position={[-0.204, 0.778, 0.272]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.536} />
-        <mesh geometry={nodes.shadeBlack_002.geometry} material={materials.blacktrim} position={[0.882, 0.214, -0.313]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.342} />
-        <mesh geometry={nodes.shadeBlack_007.geometry} material={materials.blacktrim} position={[0.882, 0.215, 0.292]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.342} />
-        <mesh geometry={nodes.shadeBlack_004.geometry} material={materials.blacktrim} position={[-0.109, 0.292, -0.461]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.342} />
-        <mesh geometry={nodes.shadeBlack_005.geometry} material={materials.blacktrim} position={[0.255, 0.451, -0.198]} rotation={[-1.712, -0.409, -0.056]} scale={0.342} />
-        <mesh geometry={nodes.shadeBlack_006.geometry} material={materials.blacktrim} position={[0.255, 0.451, 0.158]} rotation={[-1.712, -0.409, -0.056]} scale={0.342} />
-        <mesh geometry={nodes.shadeBlack_008.geometry} material={materials.blacktrim} position={[0.875, 0.214, -0.009]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.342} />
-        <mesh geometry={nodes.shadeBlack_009.geometry} material={materials.blacktrim} position={[-0.492, 0.493, -0.039]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.342} />
-        <mesh geometry={nodes.shadeBlack_010.geometry} material={materials.blacktrim} position={[-0.233, 0.772, -0.304]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.434} />
-        <mesh geometry={nodes.shadeBlack_013.geometry} material={materials.blacktrim} position={[-0.233, 0.772, -0.112]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.434} />
-        <mesh geometry={nodes.shadeBlack_014.geometry} material={materials.blacktrim} position={[-0.233, 0.773, 0.08]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.434} />
-        <mesh geometry={nodes.shadeBlack_015.geometry} material={materials.blacktrim} position={[-0.233, 0.773, 0.272]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.434} />
-        <mesh geometry={nodes.shadeBlack_011.geometry} material={materials.blacktrim} position={[0.356, 0.397, -0.505]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.342} />
-        <mesh geometry={nodes.shadeBlack_023.geometry} material={materials.blacktrim} position={[0.356, 0.399, 0.476]} rotation={[1.569, 0, -Math.PI / 2]} scale={-0.342} />
-        <mesh geometry={nodes.shadeBlack_012.geometry} material={materials.blacktrim} position={[-0.109, 0.294, 0.434]} rotation={[1.569, 0, -Math.PI / 2]} scale={-0.342} />
-        <mesh geometry={nodes.shadeBlack_016.geometry} material={materials.blacktrim} position={[0.758, 0.407, 0.238]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.342} />
-        <mesh geometry={nodes.shadeBlack_019.geometry} material={materials.blacktrim} position={[-0.994, 0.199, -0.014]} rotation={[-0.157, -1.565, -1.737]} scale={0.445} />
-        <mesh geometry={nodes.shadeBlack_020.geometry} material={materials.blacktrim} position={[-0.91, 0.214, -0.339]} rotation={[-1.573, 0, -Math.PI / 2]} scale={0.342} />
-        <mesh geometry={nodes.shadeBlack_021.geometry} material={materials.blacktrim} position={[-0.91, 0.215, 0.319]} rotation={[-1.573, 0, -Math.PI / 2]} scale={0.342} />
-        <mesh geometry={nodes.shadeBlack_022.geometry} material={materials.blacktrim} position={[-0.07, 0.095, -0.02]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.342} />
-        <mesh geometry={nodes.shadeRed_002.geometry} material={materials.chasses} position={[0.002, 0.424, -0.002]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.342} />
-        <mesh geometry={nodes.shadeWhite001.geometry} material={materials.white} position={[0.063, 0.533, -0.014]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.342} />
-        <mesh geometry={nodes.shadeWhite_002001.geometry} material={materials.white} position={[0.35, 0.421, -0.528]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.342} />
-        <mesh geometry={nodes.shadeWhite_003001.geometry} material={materials.white} position={[0.35, 0.424, 0.499]} rotation={[1.569, 0, -Math.PI / 2]} scale={-0.342} />
-        <mesh geometry={nodes.shadeWhite_007.geometry} material={materials.white} position={[-1.095, 0.199, -0.014]} rotation={[-0.157, -1.565, -1.737]} scale={0.445} />
+      <RigidBody ref={chassisRef} colliders='hull' mass={2000}>
+        <group rotation={[0, Math.PI, 0]} scale={1.75}>
+          <mesh geometry={nodes['left-headlight'].geometry} material={materials.light} position={[0.88, 0.214, -0.313]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.422} />
+          <mesh geometry={nodes['right-headlight'].geometry} material={materials.light} position={[0.88, 0.215, 0.292]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.422} />
+          <mesh geometry={nodes.toplight4.geometry} material={materials.light} position={[-0.204, 0.777, -0.304]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.536} />
+          <mesh geometry={nodes.toplight3.geometry} material={materials.light} position={[-0.204, 0.777, -0.112]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.536} />
+          <mesh geometry={nodes.toplight2.geometry} material={materials.light} position={[-0.204, 0.778, 0.08]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.536} />
+          <mesh geometry={nodes.toplight1.geometry} material={materials.light} position={[-0.204, 0.778, 0.272]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.536} />
+          <mesh geometry={nodes.shadeBlack_002.geometry} material={materials.blacktrim} position={[0.882, 0.214, -0.313]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.342} />
+          <mesh geometry={nodes.shadeBlack_007.geometry} material={materials.blacktrim} position={[0.882, 0.215, 0.292]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.342} />
+          <mesh geometry={nodes.shadeBlack_004.geometry} material={materials.blacktrim} position={[-0.109, 0.292, -0.461]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.342} />
+          <mesh geometry={nodes.shadeBlack_005.geometry} material={materials.blacktrim} position={[0.255, 0.451, -0.198]} rotation={[-1.712, -0.409, -0.056]} scale={0.342} />
+          <mesh geometry={nodes.shadeBlack_006.geometry} material={materials.blacktrim} position={[0.255, 0.451, 0.158]} rotation={[-1.712, -0.409, -0.056]} scale={0.342} />
+          <mesh geometry={nodes.shadeBlack_008.geometry} material={materials.blacktrim} position={[0.875, 0.214, -0.009]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.342} />
+          <mesh geometry={nodes.shadeBlack_009.geometry} material={materials.blacktrim} position={[-0.492, 0.493, -0.039]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.342} />
+          <mesh geometry={nodes.shadeBlack_010.geometry} material={materials.blacktrim} position={[-0.233, 0.772, -0.304]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.434} />
+          <mesh geometry={nodes.shadeBlack_013.geometry} material={materials.blacktrim} position={[-0.233, 0.772, -0.112]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.434} />
+          <mesh geometry={nodes.shadeBlack_014.geometry} material={materials.blacktrim} position={[-0.233, 0.773, 0.08]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.434} />
+          <mesh geometry={nodes.shadeBlack_015.geometry} material={materials.blacktrim} position={[-0.233, 0.773, 0.272]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.434} />
+          <mesh geometry={nodes.shadeBlack_011.geometry} material={materials.blacktrim} position={[0.356, 0.397, -0.505]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.342} />
+          <mesh geometry={nodes.shadeBlack_023.geometry} material={materials.blacktrim} position={[0.356, 0.399, 0.476]} rotation={[1.569, 0, -Math.PI / 2]} scale={-0.342} />
+          <mesh geometry={nodes.shadeBlack_012.geometry} material={materials.blacktrim} position={[-0.109, 0.294, 0.434]} rotation={[1.569, 0, -Math.PI / 2]} scale={-0.342} />
+          <mesh geometry={nodes.shadeBlack_016.geometry} material={materials.blacktrim} position={[0.758, 0.407, 0.238]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.342} />
+          <mesh geometry={nodes.shadeBlack_019.geometry} material={materials.blacktrim} position={[-0.994, 0.199, -0.014]} rotation={[-0.157, -1.565, -1.737]} scale={0.445} />
+          <mesh geometry={nodes.shadeBlack_020.geometry} material={materials.blacktrim} position={[-0.91, 0.214, -0.339]} rotation={[-1.573, 0, -Math.PI / 2]} scale={0.342} />
+          <mesh geometry={nodes.shadeBlack_021.geometry} material={materials.blacktrim} position={[-0.91, 0.215, 0.319]} rotation={[-1.573, 0, -Math.PI / 2]} scale={0.342} />
+          <mesh geometry={nodes.shadeBlack_022.geometry} material={materials.blacktrim} position={[-0.07, 0.095, -0.02]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.342} />
+          <mesh geometry={nodes.shadeRed_002.geometry} material={materials.chasses} position={[0.002, 0.424, -0.002]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.342} />
+          <mesh geometry={nodes.shadeWhite001.geometry} material={materials.white} position={[0.063, 0.533, -0.014]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.342} />
+          <mesh geometry={nodes.shadeWhite_002001.geometry} material={materials.white} position={[0.35, 0.421, -0.528]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.342} />
+          <mesh geometry={nodes.shadeWhite_003001.geometry} material={materials.white} position={[0.35, 0.424, 0.499]} rotation={[1.569, 0, -Math.PI / 2]} scale={-0.342} />
+          <mesh geometry={nodes.shadeWhite_007.geometry} material={materials.white} position={[-1.095, 0.199, -0.014]} rotation={[-0.157, -1.565, -1.737]} scale={0.445} />
+        </group>
       </RigidBody>
       {wheels.map((wheel, i) => (
         <React.Fragment key={i}>
