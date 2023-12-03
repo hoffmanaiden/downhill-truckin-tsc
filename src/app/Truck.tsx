@@ -162,7 +162,7 @@ type WheelInfo = {
 
 type ContextType = Record<string, React.ForwardRefExoticComponent<JSX.IntrinsicElements['mesh']>>
 
-export function BrunoIsaac(props: JSX.IntrinsicElements['group']) {
+export function Truck(props: JSX.IntrinsicElements['group']) {
   const { nodes, materials } = useGLTF('/bruno-isaac-truck.glb') as GLTFResult
 
   const camera = useThree((state) => state.camera)

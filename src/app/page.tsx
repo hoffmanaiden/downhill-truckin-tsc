@@ -13,6 +13,7 @@ import { Quaternion, Vector3, Vector3Tuple, Vector4Tuple } from 'three'
 import { useControls } from 'leva'
 
 import { BrunoIsaac } from './Bruno-isaac-truck'
+import { Truck } from './Truck'
 
 const LEVA_KEY = 'rapier-revolute-joint-vehicle'
 
@@ -35,6 +36,7 @@ const CONTROLS_MAP = [
 
 
 export default function Home() {
+  // const chassisRef = useRef<RapierRigidBody>(null)
 
   return (
     <Canvas>
@@ -50,10 +52,11 @@ export default function Home() {
         <PerspectiveCamera makeDefault position={[20, 20, -20]} zoom={1} />
         <ambientLight />
         <pointLight position={[10, 10, 10]} />
-        {/* <OrbitControls /> */}
+        <OrbitControls target={[0,-10,0]}/>
 
         <KeyboardControls map={CONTROLS_MAP}>
-          <BrunoIsaac />
+          {/* <BrunoIsaac /> */}
+          <Truck/>
         </KeyboardControls>
 
         <CuboidCollider position={[0, -10, 0]} args={[30, 0.5, 50]} />
