@@ -6,7 +6,7 @@ Command: npx gltfjsx@6.2.15 .\bruno-isaac-truck.glb -t
 import * as THREE from 'three'
 import React, { useRef, useEffect, RefObject, createRef, useMemo, forwardRef } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
-import { useGLTF, KeyboardControls, useKeyboardControls } from '@react-three/drei'
+import { useGLTF, KeyboardControls, useKeyboardControls, OrbitControls } from '@react-three/drei'
 import { RigidBody, RapierRigidBody, useRevoluteJoint, useFixedJoint, CylinderCollider } from "@react-three/rapier"
 import { GLTF } from 'three-stdlib'
 import { Quaternion, Vector3, Vector3Tuple, Vector4Tuple } from 'three'
@@ -143,7 +143,7 @@ const SteeredJoint = ({ body, wheel, bodyAnchor, wheelAnchor, rotationAxis }: St
 
   const left = useKeyboardControls((state) => state.left)
   const right = useKeyboardControls((state) => state.right)
-  const targetPos = left ? 0.2 : right ? -0.2 : 0
+  const targetPos = left ? 0.25 : right ? -0.25 : 0
 
   useEffect(() => {
     joint.current?.configureMotorPosition(targetPos, AXLE_TO_CHASSIS_JOINT_STIFFNESS, AXLE_TO_CHASSIS_JOINT_DAMPING)
@@ -162,14 +162,15 @@ type WheelInfo = {
 
 type ContextType = Record<string, React.ForwardRefExoticComponent<JSX.IntrinsicElements['mesh']>>
 
-export function Truck(props: JSX.IntrinsicElements['group']) {
+export const Truck = forwardRef(function (props: JSX.IntrinsicElements['group'], bodyRef: React.RefObject<RapierRigidBody>) {
   const { nodes, materials } = useGLTF('/bruno-isaac-truck.glb') as GLTFResult
 
   const camera = useThree((state) => state.camera)
   const currentCameraPosition = useRef(new Vector3(15, 15, 0))
   const currentCameraLookAt = useRef(new Vector3())
 
-  const chassisRef = useRef<RapierRigidBody>(null)
+  // const chassisRef = useRef<RapierRigidBody>(null)
+
 
   const wheels: WheelInfo[] = [
     {
@@ -207,22 +208,22 @@ export function Truck(props: JSX.IntrinsicElements['group']) {
   const axleRefs = useRef<RefObject<RapierRigidBody>[]>(wheels.map(() => createRef()))
 
   // useFrame((_, delta) => {
-  //   if (!chassisRef.current) {
+  //   if (!bodyRef.current) {
   //     return
   //   }
 
   //   const t = 1.0 - Math.pow(0.01, delta)
 
   //   const idealOffset = new Vector3(12, 5, 0)
-  //   idealOffset.applyQuaternion(chassisRef.current.rotation() as Quaternion)
-  //   idealOffset.add(chassisRef.current.translation() as Vector3)
+  //   idealOffset.applyQuaternion(bodyRef.current.rotation() as Quaternion)
+  //   idealOffset.add(bodyRef.current.translation() as Vector3)
   //   if (idealOffset.y < 0) {
   //     idealOffset.y = 0
   //   }
 
   //   const idealLookAt = new Vector3(0, 3, 0)
-  //   idealLookAt.applyQuaternion(chassisRef.current.rotation() as Quaternion)
-  //   idealLookAt.add(chassisRef.current.translation() as Vector3)
+  //   idealLookAt.applyQuaternion(bodyRef.current.rotation() as Quaternion)
+  //   idealLookAt.add(bodyRef.current.translation() as Vector3)
 
   //   currentCameraPosition.current.lerp(idealOffset, t)
   //   currentCameraLookAt.current.lerp(idealLookAt, t)
@@ -231,9 +232,19 @@ export function Truck(props: JSX.IntrinsicElements['group']) {
   //   camera.lookAt(currentCameraLookAt.current)
   // }, AFTER_RAPIER_UPDATE)
 
+
+  // useFrame((_,delta) => {
+  //   if (!bodyRef.current) {
+  //     return
+  //   }
+
+  //   const t = 1.0 - Math.pow(0.01, delta)
+  // })
+
   return (
     <group {...props} dispose={null}>
-      <RigidBody ref={chassisRef} colliders='hull' mass={2000}>
+      <OrbitControls target={[0,-10,0]} />
+      <RigidBody ref={bodyRef} colliders='hull' mass={2000}>
         <group rotation={[0, Math.PI, 0]} scale={1.75}>
           <mesh geometry={nodes['left-headlight'].geometry} material={materials.light} position={[0.88, 0.214, -0.313]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.422} />
           <mesh geometry={nodes['right-headlight'].geometry} material={materials.light} position={[0.88, 0.215, 0.292]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.422} />
@@ -273,7 +284,7 @@ export function Truck(props: JSX.IntrinsicElements['group']) {
           <RigidBody ref={axleRefs.current[i]} position={wheel.axlePosition} colliders="cuboid">
             <mesh rotation={[Math.PI / 2, 0, 0]} castShadow receiveShadow>
               <boxGeometry args={[0.3, 0.3, 0.3]} />
-              <meshStandardMaterial color="white" opacity={0.001} transparent/>
+              <meshStandardMaterial color="white" opacity={0.001} transparent />
             </mesh>
           </RigidBody>
 
@@ -295,7 +306,7 @@ export function Truck(props: JSX.IntrinsicElements['group']) {
           {/* axle to chassis joint */}
           {!wheel.isSteered ? (
             <FixedJoint
-              body={chassisRef}
+              body={bodyRef}
               wheel={axleRefs.current[i]}
               body1Anchor={wheel.axlePosition}
               body1LocalFrame={[0, 0, 0, 1]}
@@ -304,7 +315,7 @@ export function Truck(props: JSX.IntrinsicElements['group']) {
             />
           ) : (
             <SteeredJoint
-              body={chassisRef}
+              body={bodyRef}
               wheel={axleRefs.current[i]}
               bodyAnchor={wheel.axlePosition}
               wheelAnchor={[0, 0, 0]}
@@ -339,6 +350,6 @@ export function Truck(props: JSX.IntrinsicElements['group']) {
       <mesh geometry={nodes.axelBlockRL4.geometry} material={materials['blacktrim.006']} position={[-0.004, 0, -0.529]} /> */}
     </group>
   )
-}
+})
 
 useGLTF.preload('/bruno-isaac-truck.glb')
