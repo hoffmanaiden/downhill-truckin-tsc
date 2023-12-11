@@ -6,7 +6,7 @@ import styles from './page.module.css'
 import { reducer } from './State'
 
 import * as THREE from 'three'
-import React, { useRef, useEffect, RefObject, createRef, useMemo, forwardRef, useState, createContext, useReducer } from 'react'
+import React, { useRef, useEffect, RefObject, createRef, useMemo, forwardRef, useState, createContext, useReducer, useContext } from 'react'
 import { useFrame, useThree, Canvas } from '@react-three/fiber'
 import { useGLTF, KeyboardControls, useKeyboardControls, Stage, PerspectiveCamera, OrbitControls, CameraControls } from '@react-three/drei'
 import { Physics, RigidBody, RapierRigidBody, useRevoluteJoint, useFixedJoint, CylinderCollider, CuboidCollider } from "@react-three/rapier"
@@ -50,9 +50,14 @@ export default function Home() {
 
   const providerValue = useMemo(() => ({ state, dispatch }), [state, dispatch])
 
+
+
   return (
     <AppContext.Provider value={providerValue}>
-      <Canvas>
+      <Canvas 
+        onPointerDown={() => dispatch({type: 'mouseDown'})}
+        onPointerUp={() => dispatch({type: 'mouseUp'})}
+      >
         <Physics
           // updatePriority={RAPIER_UPDATE_PRIORITY}
           debug={true}
