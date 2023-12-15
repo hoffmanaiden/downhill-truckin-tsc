@@ -271,16 +271,16 @@ export function Truck(props: JSX.IntrinsicElements['group'], mouseDown: boolean)
     currentCameraPosition.current.lerp(idealOffset, t)
     currentCameraLookAt.current.lerp(idealLookAt, t)
 
-    if (!state.mouseDown) {
-      camera.position.copy(currentCameraPosition.current)
-      camera.lookAt(currentCameraLookAt.current)
-    }
-    if(state.mouseDown){
+    // if (!state.mouseDown) {
+    //   camera.position.copy(currentCameraPosition.current)
+    //   camera.lookAt(currentCameraLookAt.current)
+    // }
+    // if(state.mouseDown){
       const arr1: number[] = currentCameraPosition.current.toArray()
       const arr2: number[] = currentCameraLookAt.current.toArray()
       const arr3: number[] = arr1.concat(arr2);
       cameraRef.current?.moveTo(...arr1, true)
-    }
+    // }
 
 
 
@@ -290,8 +290,8 @@ export function Truck(props: JSX.IntrinsicElements['group'], mouseDown: boolean)
 
   return (
     <group {...props} dispose={null}>
-      {state.mouseDown ? <CameraControls ref={cameraRef}/> : null}
-      {/* <CameraControls ref={cameraRef} /> */}
+      {/* {state.mouseDown ? <CameraControls ref={cameraRef}/> : null} */}
+      <CameraControls ref={cameraRef} />
       <RigidBody ref={chassisRef} colliders='hull' mass={2000}>
         <group rotation={[0, Math.PI, 0]} scale={1.75}>
           <mesh geometry={nodes['left-headlight'].geometry} material={materials.light} position={[0.88, 0.214, -0.313]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.422} />
