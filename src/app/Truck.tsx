@@ -11,7 +11,7 @@ import { RigidBody, RapierRigidBody, useRevoluteJoint, useFixedJoint, CylinderCo
 import { GLTF } from 'three-stdlib'
 import { Quaternion, Vector3, Vector3Tuple, Vector4Tuple } from 'three'
 
-import {AppContext} from './page'
+import { AppContext } from './page'
 
 type GLTFResult = GLTF & {
   nodes: {
@@ -111,14 +111,20 @@ const AxleJoint = ({ body, wheel, bodyAnchor, wheelAnchor, rotationAxis, isDrive
 
   const forwardPressed = useKeyboardControls((state) => state.forward)
   const backwardPressed = useKeyboardControls((state) => state.back)
+  const brakePressed = useKeyboardControls((state) => state.brake)
 
   useEffect(() => {
     if (!isDriven) return
 
     let forward = 0
-    if (forward > 599) return
+    if (brakePressed) {
+      forward = 0
+      joint.current?.configureMotorVelocity(0, 0)
+      return
+    }
     if (forwardPressed) forward += 1
     if (backwardPressed) forward -= 1
+    
 
     forward *= DRIVEN_WHEEL_FORCE
 
@@ -127,7 +133,7 @@ const AxleJoint = ({ body, wheel, bodyAnchor, wheelAnchor, rotationAxis, isDrive
     }
 
     joint.current?.configureMotorVelocity(forward, DRIVEN_WHEEL_DAMPING)
-  }, [forwardPressed, backwardPressed])
+  }, [forwardPressed, backwardPressed, brakePressed])
 
   return null
 }
@@ -167,7 +173,7 @@ type ContextType = Record<string, React.ForwardRefExoticComponent<JSX.IntrinsicE
 export function Truck(props: JSX.IntrinsicElements['group'], mouseDown: boolean) {
   const { nodes, materials } = useGLTF('/bruno-isaac-truck.glb') as GLTFResult
 
-  const {state, dispatch} = useContext(AppContext)
+  const { state, dispatch } = useContext(AppContext)
 
   const camera = useThree((state) => state.camera)
   const controls = useThree((state) => state.controls)
@@ -242,6 +248,8 @@ export function Truck(props: JSX.IntrinsicElements['group'], mouseDown: boolean)
   //   camera.lookAt(currentCameraLookAt.current)
   // }, AFTER_RAPIER_UPDATE)
 
+
+
   useFrame((_, delta) => {
     if (!chassisRef.current) {
       return
@@ -263,17 +271,27 @@ export function Truck(props: JSX.IntrinsicElements['group'], mouseDown: boolean)
     currentCameraPosition.current.lerp(idealOffset, t)
     currentCameraLookAt.current.lerp(idealLookAt, t)
 
-    if(!state.mouseDown){
+    if (!state.mouseDown) {
       camera.position.copy(currentCameraPosition.current)
       camera.lookAt(currentCameraLookAt.current)
     }
+    if(state.mouseDown){
+      const arr1: number[] = currentCameraPosition.current.toArray()
+      const arr2: number[] = currentCameraLookAt.current.toArray()
+      const arr3: number[] = arr1.concat(arr2);
+      cameraRef.current?.moveTo(...arr1, true)
+    }
+
+
+
+
   }, AFTER_RAPIER_UPDATE)
 
 
   return (
     <group {...props} dispose={null}>
-      {/* <OrbitControls target={[0,-10,0]} /> */}
-      {state.mouseDown ? <CameraControls setTarget={chassisRef.current}/> : null}
+      {state.mouseDown ? <CameraControls ref={cameraRef}/> : null}
+      {/* <CameraControls ref={cameraRef} /> */}
       <RigidBody ref={chassisRef} colliders='hull' mass={2000}>
         <group rotation={[0, Math.PI, 0]} scale={1.75}>
           <mesh geometry={nodes['left-headlight'].geometry} material={materials.light} position={[0.88, 0.214, -0.313]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.422} />
