@@ -181,11 +181,8 @@ export function Truck(props: JSX.IntrinsicElements['group'], mouseDown: boolean)
   const currentCameraPosition = useRef(new Vector3(15, 15, 0))
   const currentCameraLookAt = useRef(new Vector3())
 
-  const myCameraLookAt = useRef(new Vector3())
-  const myCameraCurrPos = useRef(new Vector3())
-
   const chassisRef = useRef<RapierRigidBody>(null)
-  const cameraRef = useRef<CameraControls>(null);
+  const cameraRef = useRef<CameraControls>(null)
 
 
   const wheels: WheelInfo[] = [
@@ -220,34 +217,7 @@ export function Truck(props: JSX.IntrinsicElements['group'], mouseDown: boolean)
   ]
 
   const wheelRefs = useRef<RefObject<RapierRigidBody>[]>(wheels.map(() => createRef()))
-
   const axleRefs = useRef<RefObject<RapierRigidBody>[]>(wheels.map(() => createRef()))
-
-  // useFrame((_, delta) => {
-  //   if (!chassisRef.current) {
-  //     return
-  //   }
-
-  //   const t = 1.0 - Math.pow(0.01, delta)
-
-  //   const idealOffset = new Vector3(12, 5, 0)
-  //   idealOffset.applyQuaternion(chassisRef.current.rotation() as Quaternion)
-  //   idealOffset.add(chassisRef.current.translation() as Vector3)
-  //   if (idealOffset.y < 0) {
-  //     idealOffset.y = 0
-  //   }
-
-  //   const idealLookAt = new Vector3(0, 3, 0)
-  //   idealLookAt.applyQuaternion(chassisRef.current.rotation() as Quaternion)
-  //   idealLookAt.add(chassisRef.current.translation() as Vector3)
-
-  //   currentCameraPosition.current.lerp(idealOffset, t)
-  //   currentCameraLookAt.current.lerp(idealLookAt, t)
-
-  //   camera.position.copy(currentCameraPosition.current)
-  //   camera.lookAt(currentCameraLookAt.current)
-  // }, AFTER_RAPIER_UPDATE)
-
 
 
   useFrame((_, delta) => {
@@ -257,41 +227,37 @@ export function Truck(props: JSX.IntrinsicElements['group'], mouseDown: boolean)
 
     const t = 1.0 - Math.pow(0.01, delta)
 
-    const idealOffset = new Vector3(12, 5, 0)
+    const idealOffset = new Vector3(5, 3, 0)
     idealOffset.applyQuaternion(chassisRef.current.rotation() as Quaternion)
     idealOffset.add(chassisRef.current.translation() as Vector3)
     if (idealOffset.y < 0) {
       idealOffset.y = 0
     }
 
-    const idealLookAt = new Vector3(0, 3, 0)
+    const idealLookAt = new Vector3(0, 1, 0)
     idealLookAt.applyQuaternion(chassisRef.current.rotation() as Quaternion)
     idealLookAt.add(chassisRef.current.translation() as Vector3)
 
     currentCameraPosition.current.lerp(idealOffset, t)
     currentCameraLookAt.current.lerp(idealLookAt, t)
 
-    // if (!state.mouseDown) {
-    //   camera.position.copy(currentCameraPosition.current)
-    //   camera.lookAt(currentCameraLookAt.current)
-    // }
-    // if(state.mouseDown){
+    if(state.cameraView == 1){
+      // camera.position.copy(currentCameraPosition.current)
+      // camera.lookAt(currentCameraLookAt.current)
       const arr1: number[] = currentCameraPosition.current.toArray()
       const arr2: number[] = currentCameraLookAt.current.toArray()
-      const arr3: number[] = arr1.concat(arr2);
+      const arr3: number[] = arr1.concat(arr2)
+      cameraRef.current?.setLookAt(...arr3, true)
+    }
+    if(state.cameraView == 2){
+      const arr1: number[] = currentCameraPosition.current.toArray()
       cameraRef.current?.moveTo(...arr1, true)
-    // }
-
-
-
-
+    }
   }, AFTER_RAPIER_UPDATE)
 
-
   return (
-    <group {...props} dispose={null}>
-      {/* {state.mouseDown ? <CameraControls ref={cameraRef}/> : null} */}
-      <CameraControls ref={cameraRef} />
+    <group {...props} dispose={null} castShadow>
+      <CameraControls ref={cameraRef}/>
       <RigidBody ref={chassisRef} colliders='hull' mass={2000}>
         <group rotation={[0, Math.PI, 0]} scale={1.75}>
           <mesh geometry={nodes['left-headlight'].geometry} material={materials.light} position={[0.88, 0.214, -0.313]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.422} />

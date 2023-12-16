@@ -28,6 +28,7 @@ const CONTROLS = {
   left: 'left',
   right: 'right',
   brake: 'brake',
+  shift: 'shift'
 }
 
 const CONTROLS_MAP = [
@@ -36,28 +37,61 @@ const CONTROLS_MAP = [
   { name: CONTROLS.left, keys: ['ArrowLeft', 'a', 'A'] },
   { name: CONTROLS.right, keys: ['ArrowRight', 'd', 'D'] },
   { name: CONTROLS.brake, keys: ['Space'] },
+  { name: CONTROLS.shift, keys: ['ShiftLeft'] },
 ]
 
 const initialState = {
-  mouseDown: false,
+  cameraView: 1,
+  cameraViewUnlocked: true
 }
 export const AppContext = createContext(null)
 
 export default function Home() {
-  const chassisRef = useRef<RefObject<RapierRigidBody>>(null)
-
   const [state, dispatch] = useReducer(reducer, initialState)
-
   const providerValue = useMemo(() => ({ state, dispatch }), [state, dispatch])
 
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown, true)
+    document.addEventListener('keyup', handleKeyUp, true)
+  }, [state.cameraView, state.cameraViewUnlocked])
 
+  const handleKeyDown = (e) => {
+    switch (e.key) {
+      case 'Shift':
+        changeCameraView()
+        break;
+      default:
+        break;
+    }
+  }
+  const handleKeyUp = (e) => {
+    switch (e.key) {
+      case 'Shift':
+        dispatch({ type: 'unlockView' })
+        break
+      default:
+        break
+    }
+  }
+
+  const changeCameraView = () => {
+    if (state.cameraViewUnlocked) {
+      if (state.cameraView == 1) {
+        dispatch({ type: 'changeView', value: 2 })
+      }
+      if (state.cameraView == 2) {
+        dispatch({ type: 'changeView', value: 3 })
+      }
+      if (state.cameraView == 3) {
+        dispatch({ type: 'changeView', value: 1 })
+      }
+    }
+  }
 
   return (
     <AppContext.Provider value={providerValue}>
-      <Canvas 
-        onPointerDown={() => dispatch({type: 'mouseDown'})}
-        onPointerUp={() => dispatch({type: 'mouseUp'})}
-      >
+      <div style={{ position: 'fixed', zIndex: 99999 }}>{state.cameraView}</div>
+      <Canvas>
         <Physics
           // updatePriority={RAPIER_UPDATE_PRIORITY}
           debug={true}
@@ -66,25 +100,22 @@ export default function Home() {
           maxVelocityIterations={100}
 
         >
-          <Stage intensity={0.5} shadows="contact">
-            <PerspectiveCamera makeDefault position={[20, 20, -20]} zoom={1} />
+          <Stage intensity={0.5} shadows={false}>
+            {/* <PerspectiveCamera makeDefault /> */}
             <ambientLight />
             <pointLight position={[10, 10, 10]} />
-            {/* <OrbitControls target={[0,-10,0]}/> */}
 
             <KeyboardControls map={CONTROLS_MAP}>
               {/* <BrunoIsaac /> */}
               <Truck />
             </KeyboardControls>
 
-            <CuboidCollider position={[0, -10, 0]} args={[30, 0.5, 50]} />
-            {/* 
-        <RigidBody>
-          <mesh position={[0, -10, 0]}>
-            <boxGeometry args={[20, 0.5, 20]} />
-            <meshStandardMaterial color='green' />
-          </mesh>
-        </RigidBody> */}
+            <RigidBody colliders="cuboid" type="fixed">
+              <mesh position={[0, -10, 0]} receiveShadow>
+                <boxGeometry args={[300, 0.5, 50]} />
+                <meshStandardMaterial color='green' />
+              </mesh>
+            </RigidBody>
           </Stage>
         </Physics>
       </Canvas>

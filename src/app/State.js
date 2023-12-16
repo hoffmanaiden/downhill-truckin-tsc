@@ -1,14 +1,15 @@
 export function reducer(state, action){
     switch(action.type){
-        case 'mouseDown':
+        case 'changeView':
             return {
                 ...state,
-                mouseDown: true
+                cameraView: action.value,
+                cameraViewUnlocked: false
             }
-        case 'mouseUp':
+        case 'unlockView':
             return {
                 ...state,
-                mouseDown: false
+                cameraViewUnlocked: true
             }
         default:
             break;
