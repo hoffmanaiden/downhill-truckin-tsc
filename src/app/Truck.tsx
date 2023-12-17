@@ -230,9 +230,9 @@ export function Truck(props: JSX.IntrinsicElements['group'], mouseDown: boolean)
     const idealOffset = new Vector3(5, 3, 0)
     idealOffset.applyQuaternion(chassisRef.current.rotation() as Quaternion)
     idealOffset.add(chassisRef.current.translation() as Vector3)
-    if (idealOffset.y < 0) {
-      idealOffset.y = 0
-    }
+    // if (idealOffset.y < 0) {
+    //   idealOffset.y = 0
+    // }
 
     const idealLookAt = new Vector3(0, 1, 0)
     idealLookAt.applyQuaternion(chassisRef.current.rotation() as Quaternion)
@@ -258,7 +258,7 @@ export function Truck(props: JSX.IntrinsicElements['group'], mouseDown: boolean)
   return (
     <group {...props} dispose={null} castShadow>
       <CameraControls ref={cameraRef}/>
-      <RigidBody ref={chassisRef} colliders='hull' mass={2000}>
+      <RigidBody ref={chassisRef} colliders='hull' mass={1}>
         <group rotation={[0, Math.PI, 0]} scale={1.75}>
           <mesh geometry={nodes['left-headlight'].geometry} material={materials.light} position={[0.88, 0.214, -0.313]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.422} />
           <mesh geometry={nodes['right-headlight'].geometry} material={materials.light} position={[0.88, 0.215, 0.292]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.422} />

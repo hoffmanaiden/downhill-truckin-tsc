@@ -13,6 +13,8 @@ import { Physics, RigidBody, RapierRigidBody, useRevoluteJoint, useFixedJoint, C
 import { GLTF } from 'three-stdlib'
 import { Quaternion, Vector3, Vector3Tuple, Vector4Tuple } from 'three'
 import { useControls } from 'leva'
+import { Ramp } from './Ramp'
+import { DropInRamp } from './Drop-in-ramp'
 
 import { BrunoIsaac } from './Bruno-isaac-truck'
 import { Truck } from './Truck'
@@ -94,7 +96,7 @@ export default function Home() {
       <Canvas>
         <Physics
           // updatePriority={RAPIER_UPDATE_PRIORITY}
-          debug={true}
+          debug={false}
           // maxStabilizationIterations={50}
           // maxVelocityFrictionIterations={50}
           maxVelocityIterations={100}
@@ -107,8 +109,11 @@ export default function Home() {
 
             <KeyboardControls map={CONTROLS_MAP}>
               {/* <BrunoIsaac /> */}
-              <Truck />
+              <Truck position={[55, 15, 0]} />
             </KeyboardControls>
+            <Ramp position={[-5, -5, 0]} rotation-y={Math.PI / 2}/>
+            <Ramp position={[-15,-5, 0]} rotation-y={-Math.PI / 2}/>
+            <DropInRamp position={[50, -2, 0]} rotation-y={Math.PI / 2}/>
 
             <RigidBody colliders="cuboid" type="fixed">
               <mesh position={[0, -10, 0]} receiveShadow>

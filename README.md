@@ -1,6 +1,13 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Getting Started
+# Todo List
+- [ ] make wheels bigger
+- [ ] add wheels from blender model
+
+
+
+
+# Getting Started
 
 First, run the development server:
 
@@ -13,7 +20,3 @@ pnpm dev
 # or
 bun dev
 ```
-# my notes
-
-### nice little forward refs blog
-https://dmitripavlutin.com/react-forwardref/
