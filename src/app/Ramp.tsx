@@ -21,7 +21,7 @@ type ContextType = Record<string, React.ForwardRefExoticComponent<JSX.IntrinsicE
 export function Ramp(props: JSX.IntrinsicElements['group']) {
   const { nodes, materials } = useGLTF('/ramp.glb') as GLTFResult
   return (
-    <RigidBody colliders='hull'>
+    <RigidBody colliders='hull' restitution={0}>
       <group {...props} dispose={null}>
         <mesh geometry={nodes.Cube.geometry} material={nodes.Cube.material} />
       </group>

@@ -21,7 +21,7 @@ type ContextType = Record<string, React.ForwardRefExoticComponent<JSX.IntrinsicE
 export function DropInRamp(props: JSX.IntrinsicElements['group']) {
   const { nodes, materials } = useGLTF('/drop-in-ramp.glb') as GLTFResult
   return (
-    <RigidBody colliders='trimesh'>
+    <RigidBody colliders='trimesh' restitution={0}>
       <group {...props} dispose={null}>
         <mesh geometry={nodes.Cube.geometry} material={nodes.Cube.material} />
       </group>

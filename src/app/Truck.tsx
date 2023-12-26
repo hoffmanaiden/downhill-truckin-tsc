@@ -73,12 +73,12 @@ const RAPIER_UPDATE_PRIORITY = -50
 const AFTER_RAPIER_UPDATE = RAPIER_UPDATE_PRIORITY - 1
 
 // const AXLE_TO_CHASSIS_JOINT_STIFFNESS = 150000
-const AXLE_TO_CHASSIS_JOINT_STIFFNESS = 150000
+const AXLE_TO_CHASSIS_JOINT_STIFFNESS = 10000000
 // const AXLE_TO_CHASSIS_JOINT_DAMPING = 20
-const AXLE_TO_CHASSIS_JOINT_DAMPING = 20
+const AXLE_TO_CHASSIS_JOINT_DAMPING = 100
 
 // const DRIVEN_WHEEL_FORCE = 600
-const DRIVEN_WHEEL_FORCE = 600
+const DRIVEN_WHEEL_FORCE = 5000
 // const DRIVEN_WHEEL_DAMPING = 5
 const DRIVEN_WHEEL_DAMPING = 5
 
@@ -305,16 +305,17 @@ export function Truck(props: JSX.IntrinsicElements['group'], mouseDown: boolean)
           {/* wheel */}
           <RigidBody ref={wheelRefs.current[i]} position={wheel.wheelPosition} colliders={false}>
             <mesh rotation-x={-Math.PI / 2} castShadow receiveShadow>
-              <cylinderGeometry args={[0.25, 0.25, 0.24, 32]} />
-              <meshStandardMaterial color="#666" />
+              {/* <cylinderGeometry args={[0.25, 0.25, 0.24, 32]} /> */}
+              <cylinderGeometry args={[0.5, 0.5, 0.5, 32]} />
+              <meshStandardMaterial color="#666"/>
             </mesh>
 
-            <mesh rotation-x={-Math.PI / 2}>
+            {/* <mesh rotation-x={-Math.PI / 2}>
               <cylinderGeometry args={[0.251, 0.251, 0.241, 16]} />
               <meshStandardMaterial color="#000" wireframe />
-            </mesh>
+            </mesh> */}
 
-            <CylinderCollider mass={0.5} friction={5} args={[0.125, 0.25]} rotation={[-Math.PI / 2, 0, 0]} />
+            <CylinderCollider mass={0.5} friction={5} args={[0.24, 0.5]} rotation={[-Math.PI / 2, 0, 0]} restitution={0} friction={0.9}/>
           </RigidBody>
 
           {/* axle to chassis joint */}
@@ -341,7 +342,7 @@ export function Truck(props: JSX.IntrinsicElements['group'], mouseDown: boolean)
           <AxleJoint
             body={axleRefs.current[i]}
             wheel={wheelRefs.current[i]}
-            bodyAnchor={[0, 0, wheel.side === 'left' ? 0.35 : -0.35]}
+            bodyAnchor={[0, 0, wheel.side === 'left' ? 0.45 : -0.45]}
             wheelAnchor={[0, 0, 0]}
             rotationAxis={[0, 0, 1]}
             isDriven={wheel.isDriven}
