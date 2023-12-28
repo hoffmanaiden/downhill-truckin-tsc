@@ -315,7 +315,7 @@ export function Truck(props: JSX.IntrinsicElements['group'], mouseDown: boolean)
               <meshStandardMaterial color="#000" wireframe />
             </mesh> */}
 
-            <CylinderCollider mass={0.5} friction={5} args={[0.24, 0.5]} rotation={[-Math.PI / 2, 0, 0]} restitution={0} friction={0.9}/>
+            <CylinderCollider mass={0.5} friction={5} args={[0.24, 0.5]} rotation={[-Math.PI / 2, 0, 0]} restitution={-1} friction={1} mass={2}/>
           </RigidBody>
 
           {/* axle to chassis joint */}

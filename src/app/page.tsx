@@ -115,7 +115,7 @@ export default function Home() {
             <Ramp position={[-15,-5, 0]} rotation-y={-Math.PI / 2}/>
             <DropInRamp position={[50, -2, 0]} rotation-y={Math.PI / 2}/>
 
-            <RigidBody colliders="cuboid" type="fixed" restitution={0}>
+            <RigidBody colliders="cuboid" type="fixed" restitution={-1}>
               <mesh position={[0, -10, 0]} receiveShadow>
                 <boxGeometry args={[300, 0.5, 50]} />
                 <meshStandardMaterial color='green' />
