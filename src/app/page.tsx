@@ -18,6 +18,7 @@ import { DropInRamp } from './Drop-in-ramp'
 
 import { BrunoIsaac } from './Bruno-isaac-truck'
 import { Truck } from './Truck'
+import { Semi } from './Semi'
 
 const LEVA_KEY = 'rapier-revolute-joint-vehicle'
 
@@ -107,14 +108,16 @@ export default function Home() {
             <ambientLight />
             <pointLight position={[10, 10, 10]} />
 
+            {/* <OrbitControls/>
+            <Semi/> */}
+
             <KeyboardControls map={CONTROLS_MAP}>
-              {/* <BrunoIsaac /> */}
               <Truck position={[55, 6, 0]} />
             </KeyboardControls>
             <Ramp position={[-5, -5, 0]} rotation-y={Math.PI / 2}/>
             <Ramp position={[-15,-5, 0]} rotation-y={-Math.PI / 2}/>
             <DropInRamp position={[50, -2, 0]} rotation-y={Math.PI / 2}/>
-
+            
             <RigidBody colliders="cuboid" type="fixed" restitution={-1}>
               <mesh position={[0, -10, 0]} receiveShadow>
                 <boxGeometry args={[300, 0.5, 50]} />
