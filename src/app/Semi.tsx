@@ -4,9 +4,13 @@ Command: npx gltfjsx@6.2.16 semi.glb -t
 */
 
 import * as THREE from 'three'
-import React, { useRef } from 'react'
-import { useGLTF } from '@react-three/drei'
+import React, { useRef, useEffect, RefObject, createRef, useMemo, forwardRef, useState, useContext } from 'react'
+import { useFrame, useThree } from '@react-three/fiber'
+import { useGLTF, KeyboardControls, useKeyboardControls, OrbitControls, CameraControls } from '@react-three/drei'
+import { RigidBody, RapierRigidBody, useRevoluteJoint, useFixedJoint, CylinderCollider } from "@react-three/rapier"
 import { GLTF } from 'three-stdlib'
+import { Quaternion, Vector3, Vector3Tuple, Vector4Tuple } from 'three'
+import { AppContext } from './page'
 
 type GLTFResult = GLTF & {
   nodes: {
@@ -26,19 +30,269 @@ type GLTFResult = GLTF & {
   animations: GLTFAction[]
 }
 
+
+const RAPIER_UPDATE_PRIORITY = -50
+const AFTER_RAPIER_UPDATE = RAPIER_UPDATE_PRIORITY - 1
+// const AXLE_TO_CHASSIS_JOINT_STIFFNESS = 150000
+const AXLE_TO_CHASSIS_JOINT_STIFFNESS = 10000000
+// const AXLE_TO_CHASSIS_JOINT_DAMPING = 20
+const AXLE_TO_CHASSIS_JOINT_DAMPING = 100
+// const DRIVEN_WHEEL_FORCE = 600
+const DRIVEN_WHEEL_FORCE = 5000
+// const DRIVEN_WHEEL_DAMPING = 5
+const DRIVEN_WHEEL_DAMPING = 5
+
+
+type FixedJointProps = {
+  body: RefObject<RapierRigidBody>
+  wheel: RefObject<RapierRigidBody>
+  body1Anchor: Vector3Tuple
+  body1LocalFrame: Vector4Tuple
+  body2Anchor: Vector3Tuple
+  body2LocalFrame: Vector4Tuple
+}
+
+const FixedJoint = ({ body, wheel, body1Anchor, body1LocalFrame, body2Anchor, body2LocalFrame }: FixedJointProps) => {
+  useFixedJoint(body, wheel, [body1Anchor, body1LocalFrame, body2Anchor, body2LocalFrame])
+
+  return null
+}
+
+type AxleJointProps = {
+  body: RefObject<RapierRigidBody>
+  wheel: RefObject<RapierRigidBody>
+  bodyAnchor: Vector3Tuple
+  wheelAnchor: Vector3Tuple
+  rotationAxis: Vector3Tuple
+  isDriven: boolean
+}
+
+const AxleJoint = ({ body, wheel, bodyAnchor, wheelAnchor, rotationAxis, isDriven }: AxleJointProps) => {
+  const joint = useRevoluteJoint(body, wheel, [bodyAnchor, wheelAnchor, rotationAxis])
+
+  const forwardPressed = useKeyboardControls((state) => state.forward)
+  const backwardPressed = useKeyboardControls((state) => state.back)
+  const brakePressed = useKeyboardControls((state) => state.brake)
+
+  useEffect(() => {
+    if (!isDriven) return
+
+    let forward = 0
+    if (brakePressed) {
+      forward = 0
+      joint.current?.configureMotorVelocity(0, 0)
+      return
+    }
+    if (forwardPressed) forward += 1
+    if (backwardPressed) forward -= 1
+
+
+    forward *= DRIVEN_WHEEL_FORCE
+
+    if (forward !== 0) {
+      wheel.current?.wakeUp()
+    }
+
+    joint.current?.configureMotorVelocity(forward, DRIVEN_WHEEL_DAMPING)
+  }, [forwardPressed, backwardPressed, brakePressed])
+
+  return null
+}
+
+type SteeredJointProps = {
+  body: RefObject<RapierRigidBody>
+  wheel: RefObject<RapierRigidBody>
+  bodyAnchor: Vector3Tuple
+  wheelAnchor: Vector3Tuple
+  rotationAxis: Vector3Tuple
+}
+
+const SteeredJoint = ({ body, wheel, bodyAnchor, wheelAnchor, rotationAxis }: SteeredJointProps) => {
+  const joint = useRevoluteJoint(body, wheel, [bodyAnchor, wheelAnchor, rotationAxis])
+
+  const left = useKeyboardControls((state) => state.left)
+  const right = useKeyboardControls((state) => state.right)
+  const targetPos = left ? 0.25 : right ? -0.25 : 0
+
+  useEffect(() => {
+    joint.current?.configureMotorPosition(targetPos, AXLE_TO_CHASSIS_JOINT_STIFFNESS, AXLE_TO_CHASSIS_JOINT_DAMPING)
+  }, [left, right])
+
+  return null
+}
+
+type WheelInfo = {
+  axlePosition: Vector3Tuple
+  wheelPosition: Vector3Tuple
+  isSteered: boolean
+  side: 'left' | 'right'
+  isDriven: boolean
+}
+
 type ContextType = Record<string, React.ForwardRefExoticComponent<JSX.IntrinsicElements['mesh']>>
 
 export function Semi(props: JSX.IntrinsicElements['group']) {
   const { nodes, materials } = useGLTF('/semi.glb') as GLTFResult
+  const { state, dispatch } = useContext(AppContext)
+
+  const currentCameraPosition = useRef(new Vector3(15, 15, 0))
+  const currentCameraLookAt = useRef(new Vector3())
+  const chassisRef = useRef<RapierRigidBody>(null)
+  const cameraRef = useRef<CameraControls>(null)
+
+  const wheels: WheelInfo[] = [
+    {
+      axlePosition: [-1.1, -1, 0.7],
+      wheelPosition: [-1.1, -0.8, 1],
+      isSteered: true,
+      side: 'left',
+      isDriven: false,
+    },
+    {
+      axlePosition: [-1.1, -1, -0.7],
+      wheelPosition: [-1.1, -0.8, -1],
+      isSteered: true,
+      side: 'right',
+      isDriven: false,
+    },
+    {
+      axlePosition: [2.2, -1, 0.7],
+      wheelPosition: [2.2, -0.8, 1],
+      isSteered: false,
+      side: 'left',
+      isDriven: true,
+    },
+    {
+      axlePosition: [2.2, -1, -0.7],
+      wheelPosition: [2.2, -0.8, -1],
+      isSteered: false,
+      side: 'right',
+      isDriven: true,
+    },
+    {
+      axlePosition: [3.5, -1, 0.7],
+      wheelPosition: [3.5, -0.8, 1],
+      isSteered: false,
+      side: 'left',
+      isDriven: true,
+    },
+    {
+      axlePosition: [3.5, -1, -0.7],
+      wheelPosition: [3.5, -0.8, -1],
+      isSteered: false,
+      side: 'right',
+      isDriven: true,
+    },
+  ]
+
+  const wheelRefs = useRef<RefObject<RapierRigidBody>[]>(wheels.map(() => createRef()))
+  const axleRefs = useRef<RefObject<RapierRigidBody>[]>(wheels.map(() => createRef()))
+
+  useFrame((_, delta) => {
+    if (!chassisRef.current) {
+      return
+    }
+
+    const t = 1.0 - Math.pow(0.01, delta)
+
+    const idealOffset = new Vector3(5, 3, 0)
+    idealOffset.applyQuaternion(chassisRef.current.rotation() as Quaternion)
+    idealOffset.add(chassisRef.current.translation() as Vector3)
+    // if (idealOffset.y < 0) {
+    //   idealOffset.y = 0
+    // }
+
+    const idealLookAt = new Vector3(0, 1, 0)
+    idealLookAt.applyQuaternion(chassisRef.current.rotation() as Quaternion)
+    idealLookAt.add(chassisRef.current.translation() as Vector3)
+
+    currentCameraPosition.current.lerp(idealOffset, t)
+    currentCameraLookAt.current.lerp(idealLookAt, t)
+
+    if (state.cameraView == 1) {
+      // camera.position.copy(currentCameraPosition.current)
+      // camera.lookAt(currentCameraLookAt.current)
+      const arr1: number[] = currentCameraPosition.current.toArray()
+      const arr2: number[] = currentCameraLookAt.current.toArray()
+      const arr3: number[] = arr1.concat(arr2)
+      cameraRef.current?.setLookAt(...arr3, true)
+    }
+    if (state.cameraView == 2) {
+      const arr1: number[] = currentCameraPosition.current.toArray()
+      cameraRef.current?.moveTo(...arr1, true)
+    }
+  }, AFTER_RAPIER_UPDATE)
+
   return (
     <group {...props} dispose={null}>
-      <group position={[-0.303, 0.183, 0]} scale={0.66}>
-        <mesh geometry={nodes.Cube001.geometry} material={materials.white} />
-        <mesh geometry={nodes.Cube001_1.geometry} material={materials.chasses} />
-        <mesh geometry={nodes.Cube001_2.geometry} material={materials.blacktrim} />
-        <mesh geometry={nodes.Cube001_3.geometry} material={materials.Yellow} />
-      </group>
-      <mesh geometry={nodes.Cube.geometry} material={materials.gray} position={[-3.737, 0, 0]} scale={0.461} />
+      <CameraControls ref={cameraRef} />
+      <RigidBody ref={chassisRef} colliders='trimesh' >
+        <group position={[0, 0, 0]} scale={1} rotation={[0, Math.PI, 0]}>
+          <mesh geometry={nodes.Cube001.geometry} material={materials.white} />
+          <mesh geometry={nodes.Cube001_1.geometry} material={materials.chasses} />
+          <mesh geometry={nodes.Cube001_2.geometry} material={materials.blacktrim} />
+          <mesh geometry={nodes.Cube001_3.geometry} material={materials.Yellow} />
+        </group>
+      </RigidBody>
+      {/* <mesh geometry={nodes.Cube.geometry} material={materials.gray} position={[-3.737, 0, 0]} scale={1} /> */}
+      {wheels.map((wheel, i) => (
+        <React.Fragment key={i}>
+          {/* axle */}
+          <RigidBody ref={axleRefs.current[i]} position={wheel.axlePosition} colliders="cuboid">
+            <mesh rotation={[Math.PI / 2, 0, 0]} castShadow receiveShadow>
+              <boxGeometry args={[0.3, 0.3, 0.3]} />
+              <meshStandardMaterial color="white" opacity={0.001} transparent />
+            </mesh>
+          </RigidBody>
+
+          {/* wheel */}
+          <RigidBody ref={wheelRefs.current[i]} position={wheel.wheelPosition} colliders={false}>
+            <mesh rotation-x={-Math.PI / 2} castShadow receiveShadow>
+              {/* <cylinderGeometry args={[0.25, 0.25, 0.24, 32]} /> */}
+              <cylinderGeometry args={[0.5, 0.5, 0.5, 32]} />
+              <meshStandardMaterial color="#212121"/>
+            </mesh>
+
+            {/* <mesh rotation-x={-Math.PI / 2}>
+              <cylinderGeometry args={[0.251, 0.251, 0.241, 16]} />
+              <meshStandardMaterial color="#000" wireframe />
+            </mesh> */}
+
+            <CylinderCollider mass={0.5} friction={5} args={[0.24, 0.5]} rotation={[-Math.PI / 2, 0, 0]} restitution={-1} friction={1} mass={2}/>
+          </RigidBody>
+
+          {/* axle to chassis joint */}
+          {!wheel.isSteered ? (
+            <FixedJoint
+              body={chassisRef}
+              wheel={axleRefs.current[i]}
+              body1Anchor={wheel.axlePosition}
+              body1LocalFrame={[0, 0, 0, 1]}
+              body2Anchor={[0, 0, 0]}
+              body2LocalFrame={[0, 0, 0, 1]}
+            />
+          ) : (
+            <SteeredJoint
+              body={chassisRef}
+              wheel={axleRefs.current[i]}
+              bodyAnchor={wheel.axlePosition}
+              wheelAnchor={[0, 0, 0]}
+              rotationAxis={[0, 1, 0]}
+            />
+          )}
+
+          {/* wheel to axle joint */}
+          <AxleJoint
+            body={axleRefs.current[i]}
+            wheel={wheelRefs.current[i]}
+            bodyAnchor={[0, 0, wheel.side === 'left' ? 0.45 : -0.45]}
+            wheelAnchor={[0, 0, 0]}
+            rotationAxis={[0, 0, 1]}
+            isDriven={wheel.isDriven}
+          />
+
+        </React.Fragment>
+      ))}
     </group>
   )
 }

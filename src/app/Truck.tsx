@@ -10,7 +10,6 @@ import { useGLTF, KeyboardControls, useKeyboardControls, OrbitControls, CameraCo
 import { RigidBody, RapierRigidBody, useRevoluteJoint, useFixedJoint, CylinderCollider } from "@react-three/rapier"
 import { GLTF } from 'three-stdlib'
 import { Quaternion, Vector3, Vector3Tuple, Vector4Tuple } from 'three'
-
 import { AppContext } from './page'
 
 type GLTFResult = GLTF & {
@@ -175,12 +174,11 @@ export function Truck(props: JSX.IntrinsicElements['group'], mouseDown: boolean)
 
   const { state, dispatch } = useContext(AppContext)
 
-  const camera = useThree((state) => state.camera)
-  const controls = useThree((state) => state.controls)
+  // const camera = useThree((state) => state.camera)
+  // const controls = useThree((state) => state.controls)
   // const currentCameraPosition = useRef(new Vector3(15, 15, 0))
   const currentCameraPosition = useRef(new Vector3(15, 15, 0))
   const currentCameraLookAt = useRef(new Vector3())
-
   const chassisRef = useRef<RapierRigidBody>(null)
   const cameraRef = useRef<CameraControls>(null)
 
@@ -240,6 +238,7 @@ export function Truck(props: JSX.IntrinsicElements['group'], mouseDown: boolean)
 
     currentCameraPosition.current.lerp(idealOffset, t)
     currentCameraLookAt.current.lerp(idealLookAt, t)
+    // console.log(chassisRef.current)
 
     if(state.cameraView == 1){
       // camera.position.copy(currentCameraPosition.current)
@@ -307,7 +306,7 @@ export function Truck(props: JSX.IntrinsicElements['group'], mouseDown: boolean)
             <mesh rotation-x={-Math.PI / 2} castShadow receiveShadow>
               {/* <cylinderGeometry args={[0.25, 0.25, 0.24, 32]} /> */}
               <cylinderGeometry args={[0.5, 0.5, 0.5, 32]} />
-              <meshStandardMaterial color="#666"/>
+              <meshStandardMaterial color="#212121"/>
             </mesh>
 
             {/* <mesh rotation-x={-Math.PI / 2}>
