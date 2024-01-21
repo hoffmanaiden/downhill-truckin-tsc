@@ -250,7 +250,7 @@ export function Truck(props: JSX.IntrinsicElements['group'], mouseDown: boolean)
     }
     if(state.cameraView == 2){
       const arr1: number[] = currentCameraPosition.current.toArray()
-      cameraRef.current?.moveTo(...arr1, true)
+      cameraRef.current?.moveTo(arr1[0], arr1[1], arr1[2], true);
     }
   }, AFTER_RAPIER_UPDATE)
 
@@ -314,7 +314,7 @@ export function Truck(props: JSX.IntrinsicElements['group'], mouseDown: boolean)
               <meshStandardMaterial color="#000" wireframe />
             </mesh> */}
 
-            <CylinderCollider mass={0.5} friction={5} args={[0.24, 0.5]} rotation={[-Math.PI / 2, 0, 0]} restitution={-1} friction={1} mass={2}/>
+            <CylinderCollider friction={1} mass={2} args={[0.24, 0.5]} rotation={[-Math.PI / 2, 0, 0]} restitution={-1}/>
           </RigidBody>
 
           {/* axle to chassis joint */}
