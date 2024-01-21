@@ -23,7 +23,6 @@ type GLTFResult = GLTF & {
     ['darkGreen.001']: THREE.MeshStandardMaterial
     ['darkGreen.002']: THREE.MeshStandardMaterial
   }
-  animations: GLTFAction[]
 }
 
 type ContextType = Record<string, React.ForwardRefExoticComponent<JSX.IntrinsicElements['mesh']>>

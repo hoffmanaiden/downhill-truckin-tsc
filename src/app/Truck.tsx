@@ -172,7 +172,7 @@ type ContextType = Record<string, React.ForwardRefExoticComponent<JSX.IntrinsicE
 export function Truck(props: JSX.IntrinsicElements['group'], mouseDown: boolean) {
   const { nodes, materials } = useGLTF('/bruno-isaac-truck.glb') as GLTFResult
 
-  const { state, dispatch } = useContext(AppContext)
+  const { state, dispatch } = useContext(AppContext) as { state: any; dispatch: any }
 
   // const camera = useThree((state) => state.camera)
   // const controls = useThree((state) => state.controls)
@@ -246,7 +246,7 @@ export function Truck(props: JSX.IntrinsicElements['group'], mouseDown: boolean)
       const arr1: number[] = currentCameraPosition.current.toArray()
       const arr2: number[] = currentCameraLookAt.current.toArray()
       const arr3: number[] = arr1.concat(arr2)
-      cameraRef.current?.setLookAt(...arr3, true)
+      cameraRef.current?.setLookAt(...arr3 as [number, number, number, number, number, number], true)
     }
     if(state.cameraView == 2){
       const arr1: number[] = currentCameraPosition.current.toArray()

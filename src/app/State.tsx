@@ -1,5 +1,11 @@
-export function reducer(state, action){
-    switch(action.type){
+
+export type StateType = {
+    cameraView: any; // replace 'any' with the actual type of cameraView
+    cameraViewUnlocked: boolean;
+};
+
+export function reducer(state: StateType, action: any) {
+    switch (action.type) {
         case 'changeView':
             return {
                 ...state,

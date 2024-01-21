@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import styles from './page.module.css'
 
-import { reducer } from './State'
+import { reducer, StateType } from './State'
 
 import * as THREE from 'three'
 import React, { useRef, useEffect, RefObject, createRef, useMemo, forwardRef, useState, createContext, useReducer, useContext } from 'react'
@@ -49,7 +49,7 @@ const initialState = {
   cameraView: 1,
   cameraViewUnlocked: true
 }
-export const AppContext = createContext(null)
+export const AppContext = createContext<{ state: any; dispatch: any } | null>(null);
 
 export default function Home() {
   const [state, dispatch] = useReducer(reducer, initialState)
@@ -60,7 +60,7 @@ export default function Home() {
     document.addEventListener('keyup', handleKeyUp, true)
   }, [state.cameraView, state.cameraViewUnlocked])
 
-  const handleKeyDown = (e) => {
+  const handleKeyDown = (e: KeyboardEvent) => {
     switch (e.key) {
       case 'Shift':
         changeCameraView()
@@ -69,7 +69,7 @@ export default function Home() {
         break;
     }
   }
-  const handleKeyUp = (e) => {
+  const handleKeyUp = (e: KeyboardEvent) => {
     switch (e.key) {
       case 'Shift':
         dispatch({ type: 'unlockView' })
@@ -155,7 +155,7 @@ export default function Home() {
                     restitution={-1}
                     key={i}
                     name={`platform ${i}`}
-                    onCollisionEnter={(props) => console.log(props?.target.colliderObject.name)}
+                    onCollisionEnter={(props) => console.log(props?.target?.colliderObject?.name)}
                   >
                     <mesh position={[-50 * i, -10 * i, 0]} rotation={[0, 0, 0.18]} receiveShadow>
                       <boxGeometry args={[50, 0.5, 50]} />
@@ -165,7 +165,7 @@ export default function Home() {
                   <PineTree position={[(-50 * i) + pine_random_number, (-10 * i)*1.05, pine_random_number]}/>
                   <LeafTree position={[(-50 * i) + leaf_random_number, (-10 * i)*1.05, leaf_random_number]}/>
                 </group> :
-                <RigidBody type="fixed" restitution={-1} key={i} sensor onIntersectionEnter={({ manifold, target, other }) => console.log("Goal!")}>
+                <RigidBody type="fixed" restitution={-1} key={i} sensor onIntersectionEnter={(props) => console.log("Goal!")}>
                   <mesh position={[(-50 * i) + 50, (-10 * i) + 25, 0]} rotation={[0, 0, Math.PI / 2]} receiveShadow>
                     <boxGeometry args={[50, 0.5, 50]} />
                     <meshStandardMaterial transparent={true} opacity={0.5} />
