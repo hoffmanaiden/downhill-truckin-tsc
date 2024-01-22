@@ -49,7 +49,9 @@ const initialState = {
   cameraView: 1,
   cameraViewUnlocked: true
 }
+
 export const AppContext = createContext<{ state: any; dispatch: any } | null>(null);
+
 
 export default function Home() {
   const [state, dispatch] = useReducer(reducer, initialState)
