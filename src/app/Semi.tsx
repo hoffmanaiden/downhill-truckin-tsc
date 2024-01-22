@@ -10,7 +10,7 @@ import { useGLTF, KeyboardControls, useKeyboardControls, OrbitControls, CameraCo
 import { RigidBody, RapierRigidBody, useRevoluteJoint, useFixedJoint, CylinderCollider } from "@react-three/rapier"
 import { GLTF } from 'three-stdlib'
 import { Quaternion, Vector3, Vector3Tuple, Vector4Tuple } from 'three'
-import { AppContext } from './page'
+import { AppContext } from './State'
 
 type GLTFResult = GLTF & {
   nodes: {
@@ -27,7 +27,6 @@ type GLTFResult = GLTF & {
     Yellow: THREE.MeshStandardMaterial
     gray: THREE.MeshStandardMaterial
   }
-  animations: GLTFAction[]
 }
 
 
@@ -133,7 +132,7 @@ type ContextType = Record<string, React.ForwardRefExoticComponent<JSX.IntrinsicE
 
 export function Semi(props: JSX.IntrinsicElements['group']) {
   const { nodes, materials } = useGLTF('/semi.glb') as GLTFResult
-  const { state, dispatch } = useContext(AppContext)
+  const { state, dispatch } = useContext(AppContext) as { state: any; dispatch: any }
 
   const currentCameraPosition = useRef(new Vector3(15, 15, 0))
   const currentCameraLookAt = useRef(new Vector3())
@@ -215,11 +214,11 @@ export function Semi(props: JSX.IntrinsicElements['group']) {
       const arr1: number[] = currentCameraPosition.current.toArray()
       const arr2: number[] = currentCameraLookAt.current.toArray()
       const arr3: number[] = arr1.concat(arr2)
-      cameraRef.current?.setLookAt(...arr3, true)
+      cameraRef.current?.setLookAt(...arr3 as [number, number, number, number, number, number], true)
     }
     if (state.cameraView == 2) {
       const arr1: number[] = currentCameraPosition.current.toArray()
-      cameraRef.current?.moveTo(...arr1, true)
+      cameraRef.current?.moveTo(arr1[0], arr1[1], arr1[2], true)
     }
   }, AFTER_RAPIER_UPDATE)
 
@@ -258,7 +257,7 @@ export function Semi(props: JSX.IntrinsicElements['group']) {
               <meshStandardMaterial color="#000" wireframe />
             </mesh> */}
 
-            <CylinderCollider mass={0.5} friction={5} args={[0.24, 0.5]} rotation={[-Math.PI / 2, 0, 0]} restitution={-1} friction={1} mass={2}/>
+            <CylinderCollider args={[0.24, 0.5]} rotation={[-Math.PI / 2, 0, 0]} restitution={-1} friction={1} mass={2}/>
           </RigidBody>
 
           {/* axle to chassis joint */}
