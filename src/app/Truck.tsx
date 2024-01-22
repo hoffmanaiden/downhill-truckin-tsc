@@ -10,7 +10,7 @@ import { useGLTF, KeyboardControls, useKeyboardControls, OrbitControls, CameraCo
 import { RigidBody, RapierRigidBody, useRevoluteJoint, useFixedJoint, CylinderCollider } from "@react-three/rapier"
 import { GLTF } from 'three-stdlib'
 import { Quaternion, Vector3, Vector3Tuple, Vector4Tuple } from 'three'
-import { AppContext } from './page'
+import { AppContext } from './State'
 
 type GLTFResult = GLTF & {
   nodes: {

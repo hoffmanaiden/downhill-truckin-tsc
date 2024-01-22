@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import styles from './page.module.css'
 
-import { reducer, StateType } from './State'
+import { AppContext, reducer, StateType } from './State'
 
 import * as THREE from 'three'
 import React, { useRef, useEffect, RefObject, createRef, useMemo, forwardRef, useState, createContext, useReducer, useContext } from 'react'
@@ -50,7 +50,7 @@ const initialState = {
   cameraViewUnlocked: true
 }
 
-export const AppContext = createContext<{ state: any; dispatch: any } | null>(null);
+// export const AppContext = createContext<{ state: any; dispatch: any } | null>(null);
 
 
 export default function Home() {

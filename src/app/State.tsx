@@ -7,6 +7,7 @@ export type StateType = {
     cameraViewUnlocked: boolean;
 };
 
+export const AppContext = createContext<{ state: any; dispatch: any } | null>(null);
 
 export function reducer(state: StateType, action: any) {
     switch (action.type) {
