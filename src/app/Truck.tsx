@@ -304,17 +304,11 @@ export function Truck(props: JSX.IntrinsicElements['group'], mouseDown: boolean)
           {/* wheel */}
           <RigidBody ref={wheelRefs.current[i]} position={wheel.wheelPosition} colliders={false}>
             <mesh rotation-x={-Math.PI / 2} castShadow receiveShadow>
-              {/* <cylinderGeometry args={[0.25, 0.25, 0.24, 32]} /> */}
               <cylinderGeometry args={[0.5, 0.5, 0.5, 32]} />
               <meshStandardMaterial color="#212121"/>
             </mesh>
 
-            {/* <mesh rotation-x={-Math.PI / 2}>
-              <cylinderGeometry args={[0.251, 0.251, 0.241, 16]} />
-              <meshStandardMaterial color="#000" wireframe />
-            </mesh> */}
-
-            <CylinderCollider friction={1} mass={2} args={[0.24, 0.5]} rotation={[-Math.PI / 2, 0, 0]} restitution={-1}/>
+            <CylinderCollider friction={1} mass={1.1} args={[0.24, 0.5]} rotation={[-Math.PI / 2, 0, 0]} restitution={-1}/>
           </RigidBody>
 
           {/* axle to chassis joint */}
