@@ -5,6 +5,7 @@ import React, { useRef, useEffect, RefObject, createRef, useMemo, forwardRef, us
 export type StateType = {
     cameraView: any; // replace 'any' with the actual type of cameraView
     cameraViewUnlocked: boolean;
+    elapsedTime: number;
 };
 
 export const AppContext = createContext<{ state: any; dispatch: any } | null>(null);
@@ -21,6 +22,11 @@ export function reducer(state: StateType, action: any) {
             return {
                 ...state,
                 cameraViewUnlocked: true
+            }
+        case 'updateTime':
+            return {
+                ...state,
+                elapsedTime: action.value
             }
         default:
             break;

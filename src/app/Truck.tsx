@@ -217,12 +217,14 @@ export function Truck(props: JSX.IntrinsicElements['group'], mouseDown: boolean)
   const wheelRefs = useRef<RefObject<RapierRigidBody>[]>(wheels.map(() => createRef()))
   const axleRefs = useRef<RefObject<RapierRigidBody>[]>(wheels.map(() => createRef()))
 
-
+  let elapsedTime = 0
   useFrame((_, delta) => {
     if (!chassisRef.current) {
       return
     }
 
+    elapsedTime += delta
+    // dispatch({ type: 'updateTime', value: elapsedTime })
     const t = 1.0 - Math.pow(0.01, delta)
 
     const idealOffset = new Vector3(5, 3, 0)

@@ -22,6 +22,8 @@ import { Semi } from './Semi'
 import { PineTree } from './PineTree'
 import { LeafTree } from './LeafTree'
 
+import Ground from './Plane'
+
 const LEVA_KEY = 'rapier-revolute-joint-vehicle'
 
 const RAPIER_UPDATE_PRIORITY = -50
@@ -52,7 +54,8 @@ const CONTROLS_MAP = [
 
 const initialState = {
   cameraView: 1,
-  cameraViewUnlocked: true
+  cameraViewUnlocked: true,
+  elapsedTime: 0
 }
 
 // export const AppContext = createContext<{ state: any; dispatch: any } | null>(null);
@@ -66,6 +69,8 @@ export default function Home() {
     document.addEventListener('keydown', handleKeyDown, true)
     document.addEventListener('keyup', handleKeyUp, true)
   }, [state.cameraView, state.cameraViewUnlocked])
+
+
 
   const handleKeyDown = (e: KeyboardEvent) => {
     switch (e.key) {
@@ -104,6 +109,7 @@ export default function Home() {
     <AppContext.Provider value={providerValue}>
       <div style={{ position: 'fixed', zIndex: 99999 }}>
         <p>{state.cameraView}</p>
+        {/* <p>{state.elapsedTime}</p> */}
       </div>
       <Canvas style={{ background: '#C4E1FF' }}>
         {/* <Sky distance={450000} sunPosition={[0, .2, 0]} inclination={0} azimuth={0} /> */}
@@ -137,6 +143,8 @@ export default function Home() {
           <KeyboardControls map={CONTROLS_MAP}>
             <Truck position={[10, 2, 0]} />
           </KeyboardControls>
+
+          {/* <Ground/> */}
 
           {[...Array(11)].map((x, i) => {
             return (
@@ -176,9 +184,7 @@ export default function Home() {
                     </mesh>
                   </RigidBody>
             )
-          }
-
-          )}
+          })}
 
           {/* <RigidBody colliders="cuboid" type="fixed" restitution={-1}>
               <mesh position={[0, -10, 0]} receiveShadow>
