@@ -256,11 +256,46 @@ export function Truck(props: JSX.IntrinsicElements['group'], mouseDown: boolean)
     }
   }, AFTER_RAPIER_UPDATE)
 
+  // const forwardPressed = useKeyboardControls((state) => state.forward)
+  // const backwardPressed = useKeyboardControls((state) => state.back)
+  // const brakePressed = useKeyboardControls((state) => state.brake)
+  const tiltForwardPressed = useKeyboardControls((state) => state.tiltforward)
+  const tiltBackwardPressed = useKeyboardControls((state) => state.tiltBackward)
+  const tiltLeftPressed = useKeyboardControls((state) => state.tiltLeft)
+  const tiltRightPressed = useKeyboardControls((state) => state.tiltRight)
+
+  useEffect(() => {
+    if(chassisRef.current){
+      if(tiltForwardPressed){
+        let torque = new Vector3(0, 0, 10);
+        torque.applyQuaternion(chassisRef.current.rotation() as Quaternion);
+        chassisRef.current.applyTorqueImpulse(torque, true);
+      }
+      if(tiltBackwardPressed){
+        let torque = new Vector3(0, 0, -10);
+        torque.applyQuaternion(chassisRef.current.rotation() as Quaternion);
+        chassisRef.current.applyTorqueImpulse(torque, true);
+      }
+      if(tiltLeftPressed){
+        let torque = new Vector3(10, 0, 0);
+        torque.applyQuaternion(chassisRef.current.rotation() as Quaternion);
+        chassisRef.current.applyTorqueImpulse(torque, true);
+      }
+      if(tiltRightPressed){
+        let torque = new Vector3(-10, 0, 0);
+        torque.applyQuaternion(chassisRef.current.rotation() as Quaternion);
+        chassisRef.current.applyTorqueImpulse(torque, true);
+      }
+    }
+  })
+
+  
+
   return (
     <group {...props} dispose={null} castShadow>
       <CameraControls ref={cameraRef}/>
       <RigidBody ref={chassisRef} colliders='hull' mass={1}>
-        <group rotation={[0, Math.PI, 0]} scale={1.75}>
+        <group rotation={[0, Math.PI, 0]} scale={1.75} castShadow>
           <mesh geometry={nodes['left-headlight'].geometry} material={materials.light} position={[0.88, 0.214, -0.313]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.422} />
           <mesh geometry={nodes['right-headlight'].geometry} material={materials.light} position={[0.88, 0.215, 0.292]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.422} />
           <mesh geometry={nodes.toplight4.geometry} material={materials.light} position={[-0.204, 0.777, -0.304]} rotation={[-1.573, 0, Math.PI / 2]} scale={0.536} />
@@ -297,7 +332,7 @@ export function Truck(props: JSX.IntrinsicElements['group'], mouseDown: boolean)
         <React.Fragment key={i}>
           {/* axle */}
           <RigidBody ref={axleRefs.current[i]} position={wheel.axlePosition} colliders="cuboid">
-            <mesh rotation={[Math.PI / 2, 0, 0]} castShadow receiveShadow>
+            <mesh rotation={[Math.PI / 2, 0, 0]}  >
               <boxGeometry args={[0.3, 0.3, 0.3]} />
               <meshStandardMaterial color="white" opacity={0.001} transparent />
             </mesh>

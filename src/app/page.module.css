@@ -1,0 +1,18 @@
+
+.imgLink {
+  width: 20%;
+  flex: 0 0 calc(50% - 18px); /* Space for 4 items per row */
+  margin: 5px; /* Space between each item */
+  border-radius: 18px; /* Rounded corners */
+}
+.imgLink img {
+  width: 100%;
+  border-radius: 18px; /* Rounded corners */
+}
+
+.homePage {
+  display: flex;
+  flex-wrap: wrap; /* Allow items to break to new line */
+  justify-content: space-between; /* Space between items */
+  margin: 25px;
+}
