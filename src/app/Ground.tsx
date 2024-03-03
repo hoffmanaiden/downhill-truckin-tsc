@@ -24,6 +24,7 @@ import {
   CylinderCollider,
   CuboidCollider
 } from "@react-three/rapier"
+import Box from './Box';
 
 const Ground = ({ position }: { position: any }) => {
   const ref = useRef<Mesh>(null);
@@ -92,10 +93,24 @@ const Ground = ({ position }: { position: any }) => {
   // <RigidBody colliders="trimesh" type="fixed" restitution={-1}>
 
   return (
-    <group>
-      <RigidBody type="fixed" position={position} restitution={-5} friction={-0.05}>
-        {vertices.length > 0 && indices.length > 0 && (<TrimeshCollider args={[vertices, indices]} />)}
-        <mesh ref={ref} receiveShadow castShadow>
+    <group position={position}>
+      <group position={[0, 100, 0]}>
+        <directionalLight
+          color={0xffffff} // white light
+          castShadow // enable shadow casting
+          intensity={1}
+          shadow-camera-left={-100} // Adjust the left boundary of the shadow camera frustum
+          shadow-camera-right={100} // Adjust the right boundary of the shadow camera frustum
+          shadow-camera-top={100} // Adjust the top boundary of the shadow camera frustum
+          shadow-camera-bottom={-100} // Adjust the bottom boundary of the shadow camera frustum
+          shadow-camera-near={0.5} // Adjust the near clipping plane of the shadow camera frustum
+          shadow-camera-far={200} // Adjust the far clipping plane of the shadow camera frustum
+        />
+        <Box visible={false}/>
+      </group>
+      <RigidBody type="fixed"  restitution={-5} friction={0.2}>
+        <mesh ref={ref} receiveShadow={true}>
+          {vertices.length > 0 && indices.length > 0 && (<TrimeshCollider args={[vertices, indices]} />)}
           <meshStandardMaterial attach="material" color="green" side={DoubleSide} />
         </mesh>
       </RigidBody>

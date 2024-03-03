@@ -126,8 +126,6 @@ export default function Lvl1(props: LvlProps) {
         {/* <p>{state.elapsedTime}</p> */}
       </div>
       <Canvas style={{ background: '#C4E1FF' }} >
-        {/* #C4E1FF */}
-        {/* <Environment files="./potsdamer_platz_1k.exr" /> */}
         <Physics
           // updatePriority={RAPIER_UPDATE_PRIORITY}
           debug={false}
@@ -162,14 +160,6 @@ export default function Lvl1(props: LvlProps) {
             </KeyboardControls> :
             null
           }
-
-
-          {/* <Ground position={[0, -5, 0]} />
-          <Ground position={[-200, -20, 0]} />
-          <Ground position={[-400, -35, 0]} />
-          <Ground position={[-600, -50, 0]} />
-          <Ground position={[-800, -15, 0]} />
-          <Ground position={[-1000, -17.5, 0]} /> */}
 
           {[...Array(11)].map((x, i) => {
             return (
@@ -210,14 +200,6 @@ export default function Lvl1(props: LvlProps) {
                   </RigidBody>
             )
           })}
-
-          {/* <RigidBody colliders="cuboid" type="fixed" restitution={-1}>
-              <mesh position={[0, -10, 0]} receiveShadow>
-                <boxGeometry args={[300, 0.5, 50]} />
-                <meshStandardMaterial color='green' />
-              </mesh>
-            </RigidBody> */}
-          {/* </Stage> */}
         </Physics>
       </Canvas>
     </AppContext.Provider>
