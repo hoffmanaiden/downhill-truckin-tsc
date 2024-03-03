@@ -4,8 +4,8 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 - [ ] make wheels bigger
 - [ ] add wheels from blender model
 
-
-
+# Youtube video
+https://www.youtube.com/watch?v=1-7PY08aRM0&t=344
 
 # Getting Started
 
